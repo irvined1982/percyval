@@ -1,0 +1,25 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+<div id="accordion" style="width:95%; box-align:center;">
+	<h3>Details - {{ feature.case.name }}</h3>
+	<div>
+		{% include "percyval/featureTree.html" with f=feature %}
+	</div>
+</div>
+	{% for gallery in feature.getGalleries %}
+	<div>
+		<span>
+			<img src='{{MEDIA_URL}}{{ gallery.image }}' width='300px' />
+		</span>
+		<span>
+		<a href="{{ gallery.URL }}" title="{{ gallery.name }}">{{ gallery.name }}</a> ({{ gallery.mTimeString }})
+		</span>
+	</div>
+	{% endfor %}
+{% endblock %}
+
+{% block buttons %}
+
+
+{% endblock %}
+

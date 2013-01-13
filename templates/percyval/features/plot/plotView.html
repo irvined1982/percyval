@@ -1,0 +1,126 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+<div id="accordion" style="width:95%; box-align:center;">
+	<h3>Details - {{ feature.case.name }}</h3>
+	<div>
+		{% include "percyval/featureTree.html" with f=feature %}
+
+	  	<span id="lastUpdated">Loading...</span></p>
+		<div id="timeChooser"></div>
+	</div>
+</div>
+<div style="margin:5px; height:5px;"></div>
+<div id="placeholder" style="width:95%;height:80%; box-align:center;" ></div>
+<script>
+
+	var options={   };
+	var plot;
+
+	$(function() {
+
+		function updateFlot()
+		{
+			var s;
+			s=$( "#timeChooser" ).slider("option", "values")[0];
+			var f;
+			f=$( "#timeChooser" ).slider("option", "values")[1];
+			$.getJSON('./plotData/'+s+"/"+f+"/", function(data) {
+				plot.setData(data);
+				plot.setupGrid();
+				plot.draw();
+			});
+		}
+		function updateTime()
+		{
+			$.getJSON('./updateTime', function(data) {
+				$( "#lastUpdated" ).html("Last Updated: "+data.lastUpdated);
+				setTimeout(updateTime, 5000);
+			});
+		}
+
+		plot=$.plot($("#placeholder"), {}, options);
+		$( "#timeChooser" ).slider({
+			range: true,
+			disabled:true,
+			change:function( event, ui ) {
+				updateFlot();
+			}
+		});
+
+		var previousPoint = null;
+		$("#placeholder").bind("plothover", function (event, pos, item) {
+			if (item) {
+				if (previousPoint != item.dataIndex) {
+					previousPoint = item.dataIndex;
+						
+					$("#tooltip").remove();
+					var x = item.datapoint[0]
+					y = item.datapoint[1]
+					
+					showTooltip(item.pageX, item.pageY,
+					item.series.label + " at time: " + x + " = " + y);
+				}
+			}
+			else {
+				$("#tooltip").remove();
+				previousPoint = null;            
+			}
+		});
+
+		$.getJSON('./timeRange', function(data) {
+			$( "#timeChooser" ).slider("option", "max", data.maxTime );
+			$( "#timeChooser" ).slider("option", "min", data.minTime );
+			var start;
+			start=data.maxTime-2;
+			if (start<data.minTime){
+				start=data.minTime;
+			}
+			$( "#timeChooser" ).slider("option", "values", [ start, data.maxTime ] );
+			$( "#timeChooser" ).slider("option", "disabled", false );
+			updateFlot();
+		});
+		
+			
+			
+			
+		function updateSlider()
+		{
+
+			$.getJSON('./timeRange', function(data) {
+
+				// If the slider is at the end, then isMax is set true
+				var isMax=false;
+				var nowMax=$( "#timeChooser" ).slider("option", "max");
+				var nowVal=$( "#timeChooser" ).slider("option", "values")[1];
+				if (nowVal==nowMax){
+					isMax=true;
+				}
+				// Set the slider range regardless
+				$( "#timeChooser" ).slider("option", "max", data.maxTime );
+				$( "#timeChooser" ).slider("option", "min", data.minTime );
+
+				// If the slider is at the end (isMax) then, tail the values
+				// Set the slider values to the new end, but keep the range the same.
+				if (isMax){
+					var start=$( "#timeChooser" ).slider("option", "values")[0];
+					var length=nowVal-start;
+					start=data.maxTime-length;
+					$( "#timeChooser" ).slider("option", "values", [ start, data.maxTime ] );
+				}
+				// Update the graph, this is done every time regardless, as although the timestep
+				// might be the same, there could still be more data.
+				updateFlot();
+				setTimeout(updateSlider, 5000);
+			});
+		}
+		$(window).resize(function() {
+			plot.resize();
+			plot.setupGrid();
+			plot.draw();
+		});
+
+		updateSlider();
+		updateTime();
+	});
+</script>
+{% endblock %}

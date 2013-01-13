@@ -1,0 +1,20 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+<div id="accordion" >
+   <h3>Details - {{ feature.case.name }}</h3>
+   <div>
+	   {% include "percyval/featureTree.html" with f=feature %}
+   </div>
+	{% for movie in movies %}
+	<h3>{{ movie.name }}</h3>
+	<div>
+		<div  class="flowplayer">
+			<video src="{{MEDIA_URL}}{{ movie.URL }}"></video>
+		</div>
+		<p>Last Updated: {{ movie.mTimeString }}</p>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,16 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+	<h1> {{ name }} </h1>
+	<table>
+	<tr><th>Image</th><th>Created</th></tr>
+	{% for image in images %}
+	<tr><td><a href="{{MEDIA_URL}}{{ image.URL }}" title="{{ image.name }}">{{ image.name }}</a></td><td>{{ image.mTimeString }}</td></tr>
+	{% endfor %}
+	</table>
+{% endblock %}
+
+{% block buttons %}
+
+
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+<div id="accordion" style="width:95%; box-align:center;">
+    <h3>Details - {{ object.name }}</h3>
+    <div>
+    {% include "percyval/featureTree.html" with c=object %}							
+	</div>
+</div>
+
+<h1>Case</h1>
+<ul>
+	<li>Name: {{ object.name }}</li>
+	<li>Owner: {{ object.owner }}</li>
+	{% for option in object.options.all %}
+	<li>{{ option.name }}: {{ option.value }}</li>
+	{% endfor %}
+</ul>
+{% if object.description %}
+<h1>Description</h1>
+<p>{{ object.description }}</p>
+{% endif %}
+<h1>Features</h1>
+<table class="tablesorter">
+	<thead>
+		<tr>
+			<th>Feature Name</th>
+			<th>Last Updated</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for f in object.features.all %}
+		<tr>
+			<td><a href='{{ f.get_absolute_url }}'>{{ f.friendlyName }}</a></td>
+			<td>{{ f.getLastUpdateTime }}</td>
+			<td>{{ f.getDescription }}</td>
+		</tr>
+		{% empty %}
+		<tr>
+			<td colspan=3>No Features Defined.</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

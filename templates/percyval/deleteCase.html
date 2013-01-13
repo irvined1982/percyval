@@ -1,0 +1,20 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+	<h1>Confirm Deletion</h1>
+	<p>Deleting the case removes it from the database, it does not delete the data from disk.</p>
+	<p>Are you sure you want to delete this model?  </p>
+	<p>
+		<ul>
+			<li>Name: {{ case }}</li>
+			<li>Last Updated: {{ case.getCaseHandler.getLastUpdateTime }}</li>
+		</ul>
+	</p>
+	<P><a href='{{ case.get_absolute_url }}delete'>Yes, delete it</a><p>
+	<p><a href='/percyval/'>No, take me back</a></p>
+{% endblock %}
+
+{% block buttons %}
+
+
+{% endblock %}
+
