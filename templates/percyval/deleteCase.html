@@ -3,18 +3,15 @@
 	<h1>Confirm Deletion</h1>
 	<p>Deleting the case removes it from the database, it does not delete the data from disk.</p>
 	<p>Are you sure you want to delete this model?  </p>
-	<p>
-		<ul>
-			<li>Name: {{ case }}</li>
-			<li>Last Updated: {{ case.getCaseHandler.getLastUpdateTime }}</li>
-		</ul>
-	</p>
-	<P><a href='{{ case.get_absolute_url }}delete'>Yes, delete it</a><p>
-	<p><a href='/percyval/'>No, take me back</a></p>
-{% endblock %}
-
-{% block buttons %}
-
-
+	<dl>
+		<dt>Name</dt><dd>{{ case }}</dd>
+		<dt>Last Updated</dt><dd>{{ case.getCaseHandler.getLastUpdateTime }}</dd>
+	</dl>
+	<button class="btn btn-large btn-primary btn-warning" 
+		type="button" 
+		onclick="window.location.href='{{ case.get_absolute_url }}delete'">Delete</button>
+	<button class="btn btn-large" 
+		type="button"
+		onClick="window.location.href='{{ case.get_absolute_url }}'">Back</button>
 {% endblock %}
 

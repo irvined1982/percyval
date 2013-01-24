@@ -1,33 +1,42 @@
 {% extends "percyval/base.html" %}
 {% block main_body %}
+{% include "percyval/featureTree.html" with f=feature %}
+
 <div id="accordion" style="width:95%; box-align:center;">
 	<h3>Details - {{ feature.case.name }}</h3>
 	<div>
-		{% include "percyval/featureTree.html" with f=feature %}
-
 	  	<span id="lastUpdated">Loading...</span></p>
 		<div id="timeChooser"></div>
 	</div>
 </div>
-<div style="margin:5px; height:5px;"></div>
-<div id="placeholder" style="width:95%;height:80%; box-align:center;" ></div>
-<script>
 
-	var options={   };
+<div id='plot'>
+	<svg style='height:500px'> </svg>
+</div>
+<script>
 	var plot;
+	nv.addGraph(function() {
+		plot = nv.models.lineChart();
+		d3.select('#plot svg')
+		.datum([])
+		.transition().duration(500)
+		.call(plot);
+		nv.utils.windowResize(plot.update);
+		return plot;
+	});
 
 	$(function() {
-
-		function updateFlot()
+		function updatePlot()
 		{
 			var s;
 			s=$( "#timeChooser" ).slider("option", "values")[0];
 			var f;
 			f=$( "#timeChooser" ).slider("option", "values")[1];
 			$.getJSON('./plotData/'+s+"/"+f+"/", function(data) {
-				plot.setData(data);
-				plot.setupGrid();
-				plot.draw();
+				d3.select('#plot svg')
+				.datum(data)
+				.transition().duration(500)
+				.call(plot);
 			});
 		}
 		function updateTime()
@@ -38,12 +47,11 @@
 			});
 		}
 
-		plot=$.plot($("#placeholder"), {}, options);
 		$( "#timeChooser" ).slider({
 			range: true,
 			disabled:true,
 			change:function( event, ui ) {
-				updateFlot();
+				updatePlot();
 			}
 		});
 
@@ -77,7 +85,7 @@
 			}
 			$( "#timeChooser" ).slider("option", "values", [ start, data.maxTime ] );
 			$( "#timeChooser" ).slider("option", "disabled", false );
-			updateFlot();
+			updatePlot();
 		});
 		
 			
@@ -109,7 +117,7 @@
 				}
 				// Update the graph, this is done every time regardless, as although the timestep
 				// might be the same, there could still be more data.
-				updateFlot();
+				updatePlot();
 				setTimeout(updateSlider, 5000);
 			});
 		}

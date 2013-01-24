@@ -23,6 +23,7 @@ import time
 import os
 import re
 import csv
+from django.core.cache import cache
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -117,6 +118,12 @@ class FOAMLog(object):
 			return self._logData
 		except:
 			pass
+		cacheKey="FOAMLOG_"+self.logFilePath()
+		logData=cache.get(cacheKey)
+		if logData:
+			self._logData=logData
+			return self.logData
+
 		residuals={}
 		forces={}
 
@@ -166,6 +173,7 @@ class FOAMLog(object):
 		logData={'residuals':residuals,
 				'forces':forces,}
 		self._logData=logData
+		cache.set(cacheKey, self._logData,120)
 		return self._logData
 
 ## Plotting implementation for FOAM residuals.
@@ -175,15 +183,16 @@ class FOAMResiduals(Plot, FOAMLog):
 	# Filters out any time stamps that are not in range.
 	def getSeries(self,startTime, endTime):
 		log=sorted(self.processLog()['residuals'].values(),key=lambda s: s['name'])
+		data=[]
 		for series in log:
-			try:
-				while(series['data'][0][0]<float(startTime)):
-					series['data'].pop(0)
-				while(series['data'][-1][0]>float(endTime)):
-					series['data'].pop(-1)
-			except IndexError:
-				pass
-		return log
+			s={}
+			s['key']=series['name']
+			s['values']=[]
+			for entry in series['data'][100:140]:
+				if (entry[0] >= float(startTime)) and ( entry[0]<=float(endTime) ):
+					s['values'].append({'x':entry[0],'y':entry[1]})
+			data.append(s)
+		return data
 
 	## Gets the last update time from the foam log file.
 	def getLastUpdateTime(self):

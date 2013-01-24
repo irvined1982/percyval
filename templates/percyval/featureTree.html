@@ -1,21 +1,15 @@
-<p>
+<ul class="breadcrumb">
 	{% if f %}
-	<a href='../../'>Cases</a>-&gt;
-	<a href='{{ f.case.get_absolute_url }}'>{{ f.case.name }}</a>-&gt;
-	<a href='{{ f.get_absolute_url }}'>{{ f.friendlyName }}</a>
+		<li><a href="/percyval/">Home</a> <span class="divider">/</span></li>
+		<li><a href='{{ f.case.get_absolute_url }}'>{{ f.case.name }}</a><span class="divider">/</span></li>
+		<li><a href='{{ f.get_absolute_url }}'>{{ f.friendlyName }}</a><span class="divider">/</span></li>
 	{% else %}
-		<a href='../'>Cases</a>-&gt;
 		{% if c %}
-			<a href='{{ c.get_absolute_url }}'>{{ c.name }}</a>
-		{% endif %}
+			<li><a href="/percyval/">Home</a> <span class="divider">/</span></li>
+			<li><a href='{{ c.get_absolute_url }}'>{{ c.name }}</a><span class="divider">/</span></li>
+		{% else %}
+			<li><a href="/percyval/">Home</a></li>
+	    {% endif %}
 	{% endif %}
-</p>
-<script>
-	$(function() {
-		$( "#accordion" ).accordion({
-			collapsible: true,
-			heightStyle: "content"
-		});
-	});
-</script>
+</ul>
 

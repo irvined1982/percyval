@@ -1,26 +1,23 @@
 {% extends "percyval/base.html" %}
 {% block main_body %}
-<div id="accordion" style="width:95%; box-align:center;">
-    <h3>Details - {{ object.name }}</h3>
-    <div>
-    {% include "percyval/featureTree.html" with c=object %}							
-	</div>
-</div>
+{% include "percyval/featureTree.html" with c=object %}							
 
-<h1>Case</h1>
-<ul>
-	<li>Name: {{ object.name }}</li>
-	<li>Owner: {{ object.owner }}</li>
+<h1>Case Details</h1>
+<dl>
+	<dt>Name</dt><dd>{{ object.name }}</dd>
+	<dt>Owner</dt><dd>{{ object.owner }}</dd>
 	{% for option in object.options.all %}
-	<li>{{ option.name }}: {{ option.value }}</li>
+		<dt>{{ option.name }}</dt><dd>{{ option.value }}</dd>
 	{% endfor %}
-</ul>
+</dt>
+
 {% if object.description %}
 <h1>Description</h1>
 <p>{{ object.description }}</p>
 {% endif %}
+
 <h1>Features</h1>
-<table class="tablesorter">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>Feature Name</th>

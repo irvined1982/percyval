@@ -1,6 +1,6 @@
 {% extends "percyval/base.html" %}
 {% block main_body %}
-	<table id="monitorTable" class="tablesorter">
+	<table id="monitorTable" class="table table-striped">
 		<thead>
 			<tr>
 				<th>Name</th><th>Owner</th><th>Features</th><th>Last Updated</th><th>Actions</th>
@@ -17,15 +17,9 @@
 			</tr>
 		{% empty %}	
 			<tr>
-				<td colspan=3>No Monitors Found...</td>
+				<td colspan=5>No Cases Found...</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 	</table>
 {% endblock %}
-
-{% block buttons %}
-
-
-{% endblock %}
-
