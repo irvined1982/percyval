@@ -1,16 +1,33 @@
 {% extends "percyval/base.html" %}
 {% block main_body %}
-	<h1> {{ name }} </h1>
-	<table>
-	<tr><th>Image</th><th>Created</th></tr>
+{% include "percyval/featureTree.html" with f=feature %}
+<div id="myCarousel" data-pause="hover" class="carousel slide">
+	<!-- Carousel items -->
+	<div class="carousel-inner">
 	{% for image in images %}
-	<tr><td><a href="{{MEDIA_URL}}{{ image.URL }}" title="{{ image.name }}">{{ image.name }}</a></td><td>{{ image.mTimeString }}</td></tr>
+		<div class="{% if forloop.first %}active {% endif %}item">
+			<a href="{{MEDIA_URL}}{{ image.URL }}" title="{{ image.name }}"><img src="{{MEDIA_URL}}{{ image.URL }}"></a>
+		</div>
+		{% endfor %}
+	</div>
+	<!-- Carousel nav -->
+	<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+	<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div>
+<ul class="thumbnails">
+	{% for image in images %}
+	<li class="span4">
+		<a href="{{ image.URL }}" title="{{ imagename }}">
+			<img style="height:300px"src="{{MEDIA_URL}}{{ image.URL }}" alt="">
+			</a>
+		<dl>
+			<dt>Name</dt><dd><a href="{{ image.URL }}" title="{{ image.name }}">{{image.name}}</a></dd>
+			<dt>Modified</dt><dd>{{ image.mTimeString }}</dd>
+		</dl>
+	</li>
 	{% endfor %}
-	</table>
-{% endblock %}
-
-{% block buttons %}
-
+</ul>
 
 {% endblock %}
+
 

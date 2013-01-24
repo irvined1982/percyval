@@ -213,7 +213,7 @@ def imageGalleryView(request,id,gallery):
 		raise Http404
 	images=allImages[gallery].values()
 	images=sorted(images, key=lambda k: k['mTime'], reverse=True) 
-	return render_to_response('percyval/features/images/imageGalleryView.html',{'name':gallery,'images':images},context_instance=RequestContext(request))
+	return render_to_response('percyval/features/images/imageGalleryView.html',{'feature':feature,'name':gallery,'images':images},context_instance=RequestContext(request))
 
 ## Downloads an image from an image gallery for the ImageGallery feature.
 def imageView(request,id, image):
