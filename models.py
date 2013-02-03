@@ -230,6 +230,9 @@ class FOAMForces(Plot, FOAMLog):
 		return FOAMLog.getMinTime(self)
 
 
+
+
+
 ## Searches for movies in the case directory
 class MovieGallery(Feature):
 	friendlyName="Movies"
@@ -274,6 +277,75 @@ class MovieGallery(Feature):
 		if not os.path.isfile(movie):
 			raise ValueError
 		return movie
+
+class WebGLScenes(Feature):
+	friendlyName="3D Scenes"
+	def get_absolute_url(self):
+		return reverse('percyval.views.sceneList', args=[str(self.feature.case.id)])
+	def getLastUpdateTime(self):
+		return self.getScenes()[0]['mTimeString']
+	def getSceneList(self):
+		scenes=[]
+		for scene in self.getScenes().values():
+			subScenes=sorted(scene.values(), key=lambda k: k['mTime'], reverse=True)
+			scenes.append({
+				'name':scene['scene'],
+				'mTimeString':subScenes[0]['mTimeString'],
+				'mTime':subScenes[0]['mTime'],
+				'subScenes':subScenes,
+				})
+		return sorted(scenes, key=lambda k: k['mTime'], reverse=True)
+
+
+	def getScenes(self):
+		try:
+			return self._scenes
+		except AttributeError:
+			pass
+		cacheKey="WEBGLSCENSE_%s" % self.feature.id
+		scenes=cache.get(cacheKey)
+		if scenes:
+			self._scenes=scenes
+			return self._scenes
+
+		base=os.path.join(settings.MEDIA_ROOT, self.feature.case.options.get    (name='caseDir').value,"WebGL")
+		scenes={}
+		if not os.path.exists(base):
+			return scenes
+		if not os.path.isdir(base):
+			return scenes
+		for entry in os.listdir(base):
+			dir=os.path.join(base,entry)
+			if os.path.isdir(dir):
+				try:
+					for file in os.listdir(dir):
+						path=os.path.join(dir,file)
+						if file.endswith(".html")
+							path=path[len(base):]
+							path=path.lstrip("/")
+							data={
+									'scene':entry,
+									'localPath':os.path.join(base,path),
+									'name':os.path.basename(path),
+									'URL':os.path.join(self.features.case.options.get(name='caseDir').value,path),
+									'mTime':os.path.getmtime(os.path.join(base,path)),
+									'mTimeString':time.strftime("%Y-%m-%d %I:%M:%S %p",time.localtime(os.path.getmtime(os.path.join(base,path)))),
+									}
+							try:
+								scenes[entry][path]=data
+							except:
+								scenes[entry]={path:data}
+				except OSError:
+					pass
+		scenes.sort(key=lambda s: s['mTime'])
+		scenes.reverse()
+		self._scenes=scenes
+		cache.set(cacheKey, self._scenes,120) 
+		return self._scenes
+
+
+
+
 
 ## Searches for images in the case directory
 class ImageGallery(Feature):

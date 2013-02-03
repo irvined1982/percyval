@@ -197,6 +197,11 @@ def movieView(request,id,movie):
 	response['Content-Length']=os.path.getsize(path)
 	return response
 
+############## Web GL Scene Feature Views #################
+def sceneList(request,id):
+	feature=get_object_or_404(CaseFeature, case__pk=id, name='ImageGallery')
+	return render_to_response('percyval/features/scenes/sceneList.html',{'feature':feature},context_instance=RequestContext(request))
+
 
 ############## Image Gallery Feature Views ################
 
