@@ -320,7 +320,7 @@ class WebGLScenes(Feature):
 				try:
 					for file in os.listdir(dir):
 						path=os.path.join(dir,file)
-						if file.endswith(".html")
+						if file.endswith(".html"):
 							path=path[len(base):]
 							path=path.lstrip("/")
 							data={
