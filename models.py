@@ -122,7 +122,7 @@ class FOAMLog(object):
 		logData=cache.get(cacheKey)
 		if logData:
 			self._logData=logData
-			return self.logData
+			return self._logData
 
 		residuals={}
 		forces={}
