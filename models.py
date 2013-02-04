@@ -337,8 +337,6 @@ class WebGLScenes(Feature):
 								scenes[entry]={path:data}
 				except OSError:
 					pass
-		scenes.sort(key=lambda s: s['mTime'])
-		scenes.reverse()
 		self._scenes=scenes
 		cache.set(cacheKey, self._scenes,120) 
 		return self._scenes
