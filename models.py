@@ -289,7 +289,7 @@ class WebGLScenes(Feature):
 		for scene in self.getScenes().values():
 			subScenes=sorted(scene.values(), key=lambda k: k['mTime'], reverse=True)
 			scenes.append({
-				'name':subScenes['scene'],
+				'name':subScenes[0]['scene'],
 				'mTimeString':subScenes[0]['mTimeString'],
 				'mTime':subScenes[0]['mTime'],
 				'subScenes':subScenes,
