@@ -199,7 +199,7 @@ def movieView(request,id,movie):
 
 ############## Web GL Scene Feature Views #################
 def sceneList(request,id):
-	feature=get_object_or_404(CaseFeature, case__pk=id, name='ImageGallery')
+	feature=get_object_or_404(CaseFeature, case__pk=id, name='WebGLScenes')
 	return render_to_response('percyval/features/scenes/sceneList.html',{'feature':feature},context_instance=RequestContext(request))
 
 
