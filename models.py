@@ -303,10 +303,10 @@ class WebGLScenes(Feature):
 		except AttributeError:
 			pass
 		cacheKey="WEBGLSCENSE_%s" % self.feature.id
-		scenes=cache.get(cacheKey)
-		if scenes:
-			self._scenes=scenes
-			return self._scenes
+		#scenes=cache.get(cacheKey)
+		#if scenes:
+		#	self._scenes=scenes
+		#	return self._scenes
 
 		base=os.path.join(settings.MEDIA_ROOT, self.feature.case.options.get    (name='caseDir').value,"WebGL")
 		scenes={}
