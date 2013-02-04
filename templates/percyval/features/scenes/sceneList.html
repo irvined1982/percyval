@@ -1,0 +1,16 @@
+{% extends "percyval/base.html" %}
+{% block main_body %}
+{% include "percyval/featureTree.html" with f=feature %}
+<ul>
+	{% for scene in feature.getSceneList %}
+		<li>{{scene.name}}</li>
+		<ul>
+			{% for s in scene.subScenes %}
+			<li>
+				<a href="{{ scene.URL }}" title="{{ s.name }}">{{s.name}}</a>
+			</li>
+		</ul>
+	{% endfor %}
+</ul>
+{% endblock %}
+
