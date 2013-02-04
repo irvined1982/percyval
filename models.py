@@ -327,7 +327,7 @@ class WebGLScenes(Feature):
 									'scene':entry,
 									'localPath':os.path.join(base,path),
 									'name':os.path.basename(path),
-									'URL':os.path.join(self.features.case.options.get(name='caseDir').value,path),
+									'URL':os.path.join(self.feature.case.options.get(name='caseDir').value,path),
 									'mTime':os.path.getmtime(os.path.join(base,path)),
 									'mTimeString':time.strftime("%Y-%m-%d %I:%M:%S %p",time.localtime(os.path.getmtime(os.path.join(base,path)))),
 									}
