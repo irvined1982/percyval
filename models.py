@@ -23,11 +23,14 @@ import time
 import os
 import re
 import csv
+import logging
 from django.core.cache import cache
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
+
+log = logging.getLogger(__name__)
 
 ## This is the base feature class, all features inherit from this. Features
 #  Implement underlying functionality within the tool, cases have features,  such as
@@ -92,11 +95,15 @@ class FOAMLog(object):
 			return "log.pisoFoam"
 	## Return the fully qualified path to the log file.
 	def logFilePath(self):
-		return os.path.join(settings.MEDIA_ROOT, self.feature.case.options.get(name='caseDir').value, self.logFile())
+		path=os.path.join(settings.MEDIA_ROOT, self.feature.case.options.get(name='caseDir').value.lstrip("/"), self.logFile())
+		log.debug("FOAMLog: Log File Path: %s" % path)
+		return path
 
 	## Does a stat on the log file to get the time it was last modified.
 	def getLastUpdateTime(self):
-		return "%s" % datetime.datetime.utcfromtimestamp(os.path.getmtime(self.logFilePath()))
+		time=datetime.datetime.utcfromtimestamp(os.path.getmtime(self.logFilePath()))
+		log.debug("FOAMLog: Last Update Time: %s" %time)
+		return time
 	
 	## Gets the first timestep in the log file
 	def getMinTime(self):
@@ -283,7 +290,9 @@ class WebGLScenes(Feature):
 	def get_absolute_url(self):
 		return reverse('percyval.views.sceneList', args=[str(self.feature.case.id)])
 	def getLastUpdateTime(self):
-		return self.getScenes()[0]['mTimeString']
+		scenes=self.getScenes()
+		log.debug(scenes)
+		return scenes.values()[0].values()[0]['mTimeString']
 	def getSceneList(self):
 		scenes=[]
 		for scene in self.getScenes().values():
@@ -308,7 +317,12 @@ class WebGLScenes(Feature):
 		#	self._scenes=scenes
 		#	return self._scenes
 
-		base=os.path.join(settings.MEDIA_ROOT, self.feature.case.options.get    (name='caseDir').value,"WebGL")
+		base=os.path.join(
+				settings.MEDIA_ROOT, 
+				self.feature.case.options.get(name='caseDir').value.lstrip("/"),
+				"WebGL")
+		log.debug("getScenes: Media Root: %s" % settings.MEDIA_ROOT)
+		log.debug("getScenes: Base: %s" %base)
 		scenes={}
 		if not os.path.exists(base):
 			return scenes
@@ -327,7 +341,7 @@ class WebGLScenes(Feature):
 									'scene':entry,
 									'localPath':os.path.join(base,path),
 									'name':os.path.basename(path),
-									'URL':os.path.join(self.feature.case.options.get(name='caseDir').value,path),
+									'URL':os.path.join(self.feature.case.options.get(name='caseDir').value,"WebGL",path),
 									'mTime':os.path.getmtime(os.path.join(base,path)),
 									'mTimeString':time.strftime("%Y-%m-%d %I:%M:%S %p",time.localtime(os.path.getmtime(os.path.join(base,path)))),
 									}
