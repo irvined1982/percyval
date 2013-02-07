@@ -43,7 +43,7 @@
 		{
 			$.getJSON('./updateTime', function(data) {
 				$( "#lastUpdated" ).html("Last Updated: "+data.lastUpdated);
-				setTimeout(updateTime, 5000);
+				setTimeout(updateTime, 60000);
 			});
 		}
 
@@ -79,7 +79,7 @@
 			$( "#timeChooser" ).slider("option", "max", data.maxTime );
 			$( "#timeChooser" ).slider("option", "min", data.minTime );
 			var start;
-			start=data.maxTime-2;
+			start=Math.floor(data.maxTime*0.8);
 			if (start<data.minTime){
 				start=data.minTime;
 			}
@@ -118,7 +118,7 @@
 				// Update the graph, this is done every time regardless, as although the timestep
 				// might be the same, there could still be more data.
 				updatePlot();
-				setTimeout(updateSlider, 5000);
+				setTimeout(updateSlider, 60000);
 			});
 		}
 		$(window).resize(function() {

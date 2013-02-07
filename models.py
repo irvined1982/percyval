@@ -195,9 +195,11 @@ class FOAMResiduals(Plot, FOAMLog):
 			s={}
 			s['key']=series['name']
 			s['values']=[]
-			for entry in series['data'][100:140]:
+			for entry in series['data']:
 				if (entry[0] >= float(startTime)) and ( entry[0]<=float(endTime) ):
 					s['values'].append({'x':entry[0],'y':entry[1]})
+			while(len(s['values'])*len(log) > 15000):
+				s['values']=s['values'][::2]
 			data.append(s)
 		return data
 
